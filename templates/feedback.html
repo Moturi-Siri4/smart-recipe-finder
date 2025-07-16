@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Rating</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-image: url('/static/background.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #5c3c00;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .feedback-container {
+            background-color: rgba(255, 251, 240, 0.9);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: 20px;
+        }
+
+        /* Navigation Dashboard Styles */
+        .nav-dashboard {
+            background-color: rgba(255, 251, 240, 0.95);
+            padding: 12px 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #5c3c00;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: #ff7043;
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: #ff7043;
+            color: white;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            color: #ff5722;
+            margin-bottom: 24px;
+        }
+
+        .rating-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .star {
+            font-size: 32px;
+            cursor: pointer;
+            color: #ffd700;
+            transition: transform 0.2s ease;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .feedback-form {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5c3c00;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffab40;
+            border-radius: 8px;
+            background-color: white;
+            color: #5c3c00;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #ff7043;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #f4511e;
+        }
+
+        .thank-you-message {
+            text-align: center;
+            color: #4caf50;
+            font-size: 18px;
+            margin-top: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="feedback-container">
+        <!-- Navigation Dashboard -->
+        <div class="nav-dashboard">
+            <div class="nav-links">
+                <a href="/" class="nav-link">🏠 Home</a>
+                <a href="/meal-plan" class="nav-link">📅 Weekly Meal Plan</a>
+                <a href="/feedback" class="nav-link active">💬 Feedback</a>
+            </div>
+        </div>
+
+        <h1>Share Your Experience 💬</h1>
+
+        <div class="rating-section">
+            <h2>How would you rate our service?</h2>
+            <div class="rating-stars">
+                <span class="star" data-rating="1">★</span>
+                <span class="star" data-rating="2">★</span>
+                <span class="star" data-rating="3">★</span>
+                <span class="star" data-rating="4">★</span>
+                <span class="star" data-rating="5">★</span>
+            </div>
+        </div>
+
+        <form id="feedbackForm" action="/submit_feedback" method="POST" class="feedback-form">
+            <div class="form-group">
+                <label for="feedback">Your Feedback</label>
+                <textarea id="feedback" name="feedback" placeholder="Share your thoughts about our recipe finder..." required></textarea>
+            </div>
+            <input type="hidden" id="rating" name="rating" value="0">
+            <button type="submit" class="submit-button">Submit Feedback</button>
+        </form>
+
+        <div class="thank-you-message" id="thankYouMessage">
+            Thank you for your feedback! We appreciate your input. 😊
+        </div>
+    </div>
+
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating');
+        const feedbackForm = document.getElementById('feedbackForm');
+        const thankYouMessage = document.getElementById('thankYouMessage');
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = star.getAttribute('data-rating');
+                ratingInput.value = rating;
+                
+                // Update star colors
+                stars.forEach(s => {
+                    if (s.getAttribute('data-rating') <= rating) {
+                        s.style.color = '#ffd700';
+                    } else {
+                        s.style.color = '#ccc';
+                    }
+                });
+            });
+        });
+
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (ratingInput.value === '0') {
+                alert('Please select a rating before submitting.');
+                return;
+            }
+            
+            // Show thank you message
+            feedbackForm.style.display = 'none';
+            thankYouMessage.style.display = 'block';
+            
+            // Submit the form
+            setTimeout(() => {
+                feedbackForm.submit();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

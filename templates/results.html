@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Results</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-image: url('/static/background.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #5c3c00;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .result-container {
+            background-color: rgba(255, 251, 240, 0.9);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            color: #ff5722;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+
+        .result-area {
+            background-color: #fff3e0;
+            padding: 16px;
+            border-radius: 8px;
+            min-height: 120px;
+            overflow-y: auto;
+            color: #5c3c00;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 8px;
+        }
+
+        .result-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .result-area::-webkit-scrollbar-thumb {
+            background-color: #ff7043;
+            border-radius: 6px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-button {
+            padding: 12px 20px;
+            background-color: #ff7043;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+            font-weight: bold;
+            margin-top: 16px;
+            align-self: center;
+        }
+
+        .back-button:hover {
+            background-color: #f4511e;
+            box-shadow: 0 4px 16px rgba(244, 81, 30, 0.6);
+        }
+
+        @media (max-width: 480px) {
+            .result-container {
+                width: 100%;
+                padding: 16px;
+            }
+        }
+
+        /* Navigation Dashboard Styles */
+        .nav-dashboard {
+            background-color: rgba(255, 251, 240, 0.95);
+            padding: 12px 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #5c3c00;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: #ff7043;
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: #ff7043;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <!-- Navigation Dashboard -->
+        <div class="nav-dashboard">
+            <div class="nav-links">
+                <a href="/" class="nav-link">🏠 Home</a>
+                <a href="/meal-plan" class="nav-link">📅 Weekly Meal Plan</a>
+                <a href="/feedback" class="nav-link">💬 Feedback</a>
+            </div>
+        </div>
+
+        <h1>Recipe Results 👨‍🍳</h1>
+        <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+            <button id="ttsToggle" onclick="toggleTTS()" style="padding: 8px 16px; background-color: #4caf50; border: none; border-radius: 8px; color: white; cursor: pointer;">
+                🔊 TTS On
+            </button>
+        </div>
+        <div class="result-area" id="result">
+            {{ recipes|safe }}
+        </div>
+        {% if audio_url %}
+        <audio id="ttsPlayer" style="width: 100%; margin-top: 10px; display: none;" src="{{ audio_url }}"></audio>
+        {% endif %}
+        <button class="back-button" onclick="window.location.href='/'">Back to Search</button>
+    </div>
+
+    <script>
+        let ttsEnabled = true;
+        const ttsPlayer = document.getElementById('ttsPlayer');
+        const ttsToggle = document.getElementById('ttsToggle');
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            ttsToggle.textContent = ttsEnabled ? '🔊 TTS On' : '🔇 TTS Off';
+            ttsToggle.style.backgroundColor = ttsEnabled ? '#4caf50' : '#f44336';
+            
+            if (ttsPlayer) {
+                ttsPlayer.style.display = ttsEnabled ? 'block' : 'none';
+                if (ttsEnabled) {
+                    ttsPlayer.play();
+                } else {
+                    ttsPlayer.pause();
+                }
+            }
+        }
+
+        // Auto-play if TTS is enabled and audio exists
+        if (ttsPlayer && ttsEnabled) {
+            ttsPlayer.style.display = 'block';
+            ttsPlayer.play();
+        }
+    </script>
+</body>
+</html>

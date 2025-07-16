@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Recipe Finder</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-image: url('/static/background.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #5c3c00;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            /* height: 100vh; */
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .chat-container {
+            background-color: rgba(255, 251, 240, 0.9);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            color: #ff5722;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+
+        .catchphrase {
+            text-align: center;
+            font-style: italic;
+            color: #7f4f24;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .carousel {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+        }
+
+        .carousel img {
+            width: 140px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .carousel img:hover {
+            transform: scale(1.1);
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            background-color: #fff3e0;
+            border: 2px solid #ffab40;
+            border-radius: 8px;
+            color: #5c3c00;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff7043;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #ff7043;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #f4511e;
+            box-shadow: 0 4px 16px rgba(244, 81, 30, 0.6);
+        }
+
+        .result-area {
+            background-color: #fff3e0;
+            padding: 16px;
+            border-radius: 8px;
+            min-height: 120px;
+            overflow-y: auto;
+            color: #5c3c00;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 8px;
+        }
+
+        /* Scrollbar Styling */
+        .result-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .result-area::-webkit-scrollbar-thumb {
+            background-color: #ff7043;
+            border-radius: 6px;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 480px) {
+            .chat-container {
+                width: 100%;
+                padding: 16px;
+            }
+
+            input[type="text"],
+            button {
+                font-size: 14px;
+            }
+
+            .carousel img {
+                width: 100px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="chat-container">
+        <h1>Smart Recipe Finder 👨‍🍳</h1>
+        <p class="catchphrase">"Cooking is an art — let's create something delicious!"</p>
+
+        <!-- Carousel for inspiration -->
+        <div class="carousel">
+            <img src="https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg" alt="Pasta" />
+            <img src="https://images.pexels.com/photos/4109084/pexels-photo-4109084.jpeg" alt="Pizza" />
+            <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg" alt="Salad" />
+            <img src="https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg" alt="Dessert" />
+            <img src="https://images.pexels.com/photos/1059905/pexels-photo-1059905.jpeg" alt="Soup" />
+        </div>
+        <div class="input-area">
+            <input type="text" id="query" placeholder="What's in your kitchen today? 🍅🥦🥩" />
+            <button onclick="search()">Find Recipes</button>
+        </div>
+
+        <div class="input-area" style="margin-top: 10px;">
+            <input type="text" id="leftovers" placeholder="Leftover ingredients? (comma separated) 🥕🧅🍗" />
+            <button onclick="searchLeftovers()">Use Leftovers</button>
+        </div>
+
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-bottom: 10px;">
+            <input type="checkbox" id="ttsToggle" checked style="margin-right: 8px;">
+            <label for="ttsToggle" style="color: #5c3c00; font-size: 14px;">Enable Text-to-Speech 🔊</label>
+        </div>
+
+        <form id="searchForm" action="/results" method="POST">
+        </form>
+    </div>
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+
+        function search() {
+            const query = document.getElementById('query').value;
+            if (!query.trim()) {
+                alert("🍽️ Please enter some ingredients or a dish name!");
+                return;
+            }
+            
+            // Create hidden input for query
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'query';
+            input.value = query;
+            searchForm.appendChild(input);
+
+            // Add TTS preference
+            const ttsInput = document.createElement('input');
+            ttsInput.type = 'hidden';
+            ttsInput.name = 'tts';
+            ttsInput.value = document.getElementById('ttsToggle').checked;
+            searchForm.appendChild(ttsInput);
+            
+            searchForm.submit();
+        }
+
+        function searchLeftovers() {
+            const ingredients = document.getElementById('leftovers').value;
+            if (!ingredients.trim()) {
+                alert("🍽️ Please enter some leftover ingredients!");
+                return;
+            }
+            
+            // Create hidden input for ingredients
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ingredients';
+            input.value = ingredients;
+            searchForm.appendChild(input);
+
+            // Add TTS preference
+            const ttsInput = document.createElement('input');
+            ttsInput.type = 'hidden';
+            ttsInput.name = 'tts';
+            ttsInput.value = document.getElementById('ttsToggle').checked;
+            searchForm.appendChild(ttsInput);
+            
+            searchForm.submit();
+        }
+    </script>
+
+</body>
+
+
+</html>
