@@ -1,7 +1,7 @@
 🍽️ Smart Recipe Finder
+
 📌 Project Overview
 The Smart Recipe Finder is a comprehensive and intelligent web-based application designed to revolutionize the way users approach daily cooking and meal planning. Unlike traditional digital cookbooks that provide static recipe collections, this system offers dynamic, personalized recipe suggestions based on user input and preferences.
-
 Users can search for recipes either by entering a specific recipe name or by providing the ingredients they currently have. The system then intelligently filters recipes using criteria such as dietary preferences, cuisine type, preparation time, and nutritional needs to present the most suitable options.
 
 🎯 Objectives
